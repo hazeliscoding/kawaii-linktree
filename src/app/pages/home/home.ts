@@ -1,13 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-
-type LinkItem = {
-  label: string;
-  url: string;
-  emoji?: string;
-  description?: string;
-  isNew?: boolean;
-};
+import { ChangeDetectorRef, Component, DestroyRef, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { finalize } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SiteConfig } from '../../types/site-config';
 
 @Component({
   selector: 'app-home',
@@ -15,22 +11,39 @@ type LinkItem = {
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home {
-  profile = {
-    name: 'Hazel',
-    handle: '@hazelbasil',
-    bio: '🌸 software developer | anime + games | building cute things on the internet 🌸',
-    avatarUrl: 'https://placehold.co/256x256?text=Avatar', // TODO: swap later with something like assets/avatar.png
-  }
+export class Home implements OnInit {
+  config?: SiteConfig;
+  loading = true;
+  error?: string;
 
-  links: LinkItem[] = [
-    { label: 'AniList', url: 'https://anilist.co/user/hazelbasil', emoji: '📺', description: 'My anime list', isNew: true },
-    { label: 'MyFigureCollection', url: 'https://myfigurecollection.net/profile/hazelbasil', emoji: '🧸', description: 'My figure collection' },
-    { label: 'Backloggd', url: 'https://backloggd.com/u/hazelbasil', emoji: '🎮', description: 'My game backlog' },
-    { label: 'GitHub', url: 'https://github.com/hazeliscoding', emoji: '💻', description: 'My GitHub profile' }
-  ]
+  private readonly configUrl = '/assets/site-config.json';
 
-  footer = {
-    text: 'Made with 💖 by Hazel',
+  constructor(
+    private http: HttpClient,
+    private cdr: ChangeDetectorRef,
+    private destroyRef: DestroyRef,
+  ) {}
+
+  ngOnInit(): void {
+    this.loading = true;
+    this.error = undefined;
+
+    this.http
+      .get<SiteConfig>(this.configUrl)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        }),
+      )
+      .subscribe({
+        next: (cfg) => {
+          this.config = cfg;
+        },
+        error: () => {
+          this.error = `Could not load ${this.configUrl}`;
+        },
+      });
   }
 }

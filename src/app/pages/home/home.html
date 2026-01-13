@@ -1,49 +1,57 @@
 <main class="bg-sparkles">
   <section class="card">
-    <div class="top">
-      <div class="avatar-ring" aria-hidden="true">
-        <img class="avatar" [src]="profile.avatarUrl" alt="Profile avatar" />
+    @if (loading) {
+      <div class="status" role="status">Loading…</div>
+    } @else if (error) {
+      <div class="status error" role="alert">{{ error }}</div>
+    } @else if (config) {
+      <div class="top">
+        <div class="avatar-ring" aria-hidden="true">
+          <img class="avatar" [src]="config.profile.avatarUrl" alt="Profile avatar" />
+        </div>
+
+        <div class="title">
+          <h1>{{ config.profile.name }}</h1>
+          <p class="handle">{{ config.profile.handle }}</p>
+        </div>
+
+        <p class="bio">{{ config.profile.bio }}</p>
       </div>
 
-      <div class="title">
-        <h1>{{ profile.name }}</h1>
-        <p class="handle">{{ profile.handle }}</p>
-      </div>
-
-      <p class="bio">{{ profile.bio }}</p>
-    </div>
-
-    <div class="links" role="list">
-      @for (link of links; track link.url) {
-        <a
-          class="link"
-          role="listitem"
-          [href]="link.url"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div class="left">
-            <span class="emoji" aria-hidden="true">{{ link.emoji || '💗' }}</span>
-            <div class="meta">
-              <div class="label-row">
-                <span class="label">{{ link.label }}</span>
-                @if (link.isNew) {
-                  <span class="pill">new</span>
+      <div class="links" role="list">
+        @for (link of config.links; track link.url) {
+          <a
+            class="link"
+            role="listitem"
+            [href]="link.url"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div class="left">
+              <span class="emoji" aria-hidden="true">{{ link.emoji || '💗' }}</span>
+              <div class="meta">
+                <div class="label-row">
+                  <span class="label">{{ link.label }}</span>
+                  @if (link.isNew) {
+                    <span class="pill">new</span>
+                  }
+                </div>
+                @if (link.description) {
+                  <span class="desc">{{ link.description }}</span>
                 }
               </div>
-              @if (link.description) {
-                <span class="desc">{{ link.description }}</span>
-              }
             </div>
-          </div>
 
-          <span class="chev" aria-hidden="true">›</span>
-        </a>
-      }
-    </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </a>
+        }
+      </div>
 
-    <footer class="footer">
-      <span class="tiny">{{ footer.text }}</span>
-    </footer>
+      <footer class="footer">
+        <span class="tiny">{{ config.footer.text }}</span>
+      </footer>
+    } @else {
+      <div class="status error" role="alert">No config loaded.</div>
+    }
   </section>
 </main>

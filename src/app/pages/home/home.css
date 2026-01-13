@@ -192,3 +192,16 @@
   color: rgba(107, 85, 98, 0.75);
   font-size: 0.85rem;
 }
+
+.status {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 40px 16px;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.status.error {
+  color: var(--text);
+}
