@@ -16,6 +16,7 @@
   padding: 22px;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
 /* Soft decorative blobs */
@@ -107,11 +108,13 @@
   background: var(--surface-1);
   border: 1px solid var(--surface-1-border);
 
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
 .link:hover {
-  transform: translateY(-2px);
+  transform: translate3d(0, -2px, 0);
   box-shadow: var(--surface-1-shadow);
   border-color: var(--surface-1-hover-border);
 }
@@ -122,7 +125,7 @@
 }
 
 .link:active {
-  transform: translateY(0px);
+  transform: translate3d(0, 0, 0);
 }
 
 .left {
@@ -138,9 +141,16 @@
   display: grid;
   place-items: center;
   border-radius: var(--radius-md);
-  background: linear-gradient(180deg, var(--pink-3), #ffffff);
-  border: 1px solid rgba(255, 127, 191, 0.22);
+  border: 1px solid transparent;
+  background:
+    linear-gradient(180deg, var(--emoji-bg-1), var(--emoji-bg-2)) padding-box,
+    linear-gradient(180deg, var(--emoji-border), rgba(255, 255, 255, 0)) border-box;
+  background-clip: padding-box, border-box;
   flex: 0 0 auto;
+
+  /* Avoid odd subpixel/fringe artifacts on some GPUs */
+  transform: translateZ(0);
+  contain: paint;
 }
 
 .meta {
@@ -252,6 +262,7 @@
   box-shadow: 0 12px 30px rgba(255, 127, 191, 0.4);
   transition: opacity 180ms ease, transform 180ms ease;
   pointer-events: none;
+  z-index: 5;
 }
 
 .toast.show {
