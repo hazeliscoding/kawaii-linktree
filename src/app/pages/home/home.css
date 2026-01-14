@@ -104,16 +104,21 @@
 
   padding: 14px 14px;
   border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(255, 179, 217, 0.38);
+  background: var(--surface-1);
+  border: 1px solid var(--surface-1-border);
 
   transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
 }
 
 .link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 35px rgba(255, 127, 191, 0.18);
-  border-color: rgba(255, 127, 191, 0.55);
+  box-shadow: var(--surface-1-shadow);
+  border-color: var(--surface-1-hover-border);
+}
+
+.link:focus-visible {
+  outline: 3px solid rgba(255, 137, 199, 0.55);
+  outline-offset: 3px;
 }
 
 .link:active {
@@ -166,7 +171,7 @@
 
 .chev {
   font-size: 1.4rem;
-  color: rgba(59, 43, 54, 0.55);
+  color: var(--chev);
   padding-left: 10px;
 }
 
@@ -189,7 +194,7 @@
 }
 
 .tiny {
-  color: rgba(107, 85, 98, 0.75);
+  color: var(--tiny);
   font-size: 0.85rem;
 }
 
@@ -204,4 +209,31 @@
 
 .status.error {
   color: var(--text);
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+
+  border-radius: 999px;
+  border: 1px solid var(--control-border);
+  background: var(--control-bg);
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid rgba(255, 137, 199, 0.55);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+  .link:hover {
+    transform: none;
+  }
 }

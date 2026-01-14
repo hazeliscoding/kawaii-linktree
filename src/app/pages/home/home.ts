@@ -15,16 +15,20 @@ export class Home implements OnInit {
   config?: SiteConfig;
   loading = true;
   error?: string;
+  theme: 'light' | 'dark' = 'light';
 
   private readonly configUrl = '/assets/site-config.json';
+  private readonly themeStorageKey = 'kawaii-linktree-theme';
 
   constructor(
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-    private destroyRef: DestroyRef,
+    private destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
+    this.initTheme();
+
     this.loading = true;
     this.error = undefined;
 
@@ -35,7 +39,7 @@ export class Home implements OnInit {
         finalize(() => {
           this.loading = false;
           this.cdr.detectChanges();
-        }),
+        })
       )
       .subscribe({
         next: (cfg) => {
@@ -45,5 +49,54 @@ export class Home implements OnInit {
           this.error = `Could not load ${this.configUrl}`;
         },
       });
+  }
+
+  toggleTheme(): void {
+    this.setTheme(this.theme === 'light' ? 'dark' : 'light');
+  }
+
+  private initTheme(): void {
+    const saved = this.safeGetItem(this.themeStorageKey);
+    if (saved === 'light' || saved === 'dark') {
+      this.setTheme(saved, false);
+      return;
+    }
+
+    const prefersDark =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    this.setTheme(prefersDark ? 'dark' : 'light', false);
+  }
+
+  private setTheme(theme: 'light' | 'dark', persist = true): void {
+    this.theme = theme;
+
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+
+    if (persist) {
+      this.safeSetItem(this.themeStorageKey, theme);
+    }
+  }
+
+  private safeGetItem(key: string): string | null {
+    try {
+      if (typeof localStorage === 'undefined') return null;
+      return localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  }
+
+  private safeSetItem(key: string, value: string): void {
+    try {
+      if (typeof localStorage === 'undefined') return;
+      localStorage.setItem(key, value);
+    } catch {
+      // ignore (storage may be blocked)
+    }
   }
 }
