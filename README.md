@@ -1,59 +1,95 @@
-# KawaiiLinktree
+# 🌸 HazelTree
+[![Deploy to GitHub Pages](https://github.com/hazeliscoding/hazel-tree/actions/workflows/deploy.yml/badge.svg)](https://github.com/hazeliscoding/hazel-tree/actions/workflows/deploy.yml)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+A cute, lightweight Linktree-style profile page built with Angular.
+Content is driven by a single JSON file so you can update links, labels, emojis, and profile info without touching the UI.
 
-## Development server
+> 💻 Platform: **Web** (Angular 21)
+> 
+> ✨ Features: **light/dark theme**, **sparkle cursor**, **copy-to-clipboard links + toast**
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## 🛠 Tech Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 21 (standalone components + new control flow)
+- TypeScript
+- RxJS
+- Vitest (via `ng test`)
+- GitHub Pages deploy (`gh-pages`)
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🚀 Running Locally
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+From a terminal in the project root:
 
 ```bash
-ng build
+# 1. Install deps
+npm install
+
+# 2. Start dev server
+npm run start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Open `http://localhost:4200/`.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🧩 Customization (Your Links + Profile)
+
+Edit your content in [public/assets/site-config.json](public/assets/site-config.json).
+
+Supports:
+
+- `profile`: name, handle, bio, avatar
+- `links[]`: label, url, emoji, description
+- optional link extras:
+	- `isNew: true` to show a “new” pill
+	- `copyText` to copy text instead of navigating (shows a toast)
+
+Notes:
+
+- The app loads config from `assets/site-config.json` (relative), so it works correctly when deployed under a sub-path (GitHub Pages).
+- Put images under `public/assets/` and reference them like `assets/avatar.png`.
+
+---
+
+## 🏗 Building
 
 ```bash
-ng test
+npm run build
 ```
 
-## Running end-to-end tests
+Build output goes to `dist/`.
 
-For end-to-end (e2e) testing, run:
+---
+
+## 🧪 Tests
 
 ```bash
-ng e2e
+npm run test
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## 🌍 Deploying (GitHub Pages)
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Deploys happen automatically via GitHub Actions on every push to `main` (or `master`).
+
+The workflow builds with `--base-href /<repo-name>/` automatically (based on the GitHub repository name).
+
+If you haven’t yet, enable GitHub Pages in your repo settings:
+
+- **Settings → Pages → Build and deployment → Source:** `Deploy from a branch`
+- **Branch:** `gh-pages` (root)
+
+This repo includes a deploy script that builds for production and publishes `dist/kawaii-linktree/browser` via `gh-pages`:
+
+```bash
+npm run deploy
+```
+
+If you’re deploying to a different repo name / sub-path and using the manual script, update the `--base-href` in the `deploy` script in [package.json](package.json).
+
+
